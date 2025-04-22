@@ -15,14 +15,6 @@ const openai = new OpenAI({
 })
     
 
-export const summarywithOPENAI = async (
-    id: string [],
-	name: string [],
-	address: string [],
-	age: int [],
-	dateofbirth: int [],
-	citizenship: string []
-): Promise<
 
 export const GET: RequestHandler = async () => {
     const data = await db.select().from(user);
