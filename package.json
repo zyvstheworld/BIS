@@ -41,6 +41,8 @@
 		"vite": "^6.2.5"
 	},
 	"dependencies": {
+		"chart.js": "^4.4.9",
+		"dotenv": "^16.5.0",
 		"drizzle-orm": "^0.40.0",
 		"openai": "^4.95.1"
 	},
