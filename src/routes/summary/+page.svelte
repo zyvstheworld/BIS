@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { Chart, DoughnutController, ArcElement, Tooltip, Legend} from 'chart.js';
 	import type { ChartConfiguration } from 'chart.js';
 
@@ -15,33 +15,34 @@
 		}
 	};
 	let loading = false;
+	let chart: Chart | null = null;
 
 	onMount(() => {
 		if(!canvas) return;
 
-	
-    Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
+		Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
-    const config: ChartConfiguration<'doughnut'> = {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-        	data: [stats.ageGroups.youth, stats.ageGroups.adult, stats.ageGroups.senior],
-          backgroundColor: ['#60a5fa', '#34d399', '#fbbf24', '#f87171'],
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }
-    };
+		const config: ChartConfiguration<'doughnut'> = {
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data: [stats.ageGroups.youth, stats.ageGroups.adult, stats.ageGroups.senior],
+					backgroundColor: ['#60a5fa', '#34d399', '#fbbf24'],
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: {
+						position: 'bottom'
+					}
+				}
+			}
+		};
 
-    new Chart(canvas, config);
-  });
+		chart = new Chart(canvas, config);
+	});
+
 	async function generateSummary() {
 		loading = true;
 		try {
@@ -50,6 +51,15 @@
 			// uodate both stats and summary together
 			stats = data.stats;
 			summary = data.summary;
+			
+			if (chart) {
+				chart.data.datasets[0].data = [
+					stats.ageGroups.youth,
+					stats.ageGroups.adult,
+					stats.ageGroups.senior
+				];
+				chart.update();
+			}
 		} catch (error) {
 			console.error('Error:', error);
 			summary = 'Failed to generate summary';
@@ -57,6 +67,12 @@
 			loading = false;
 		}
 	}
+
+	onDestroy(() => {
+		if (chart) {
+			chart.destroy();
+		}
+	});
 </script>
 
 <div class="space-y-8">
