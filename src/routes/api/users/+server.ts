@@ -5,6 +5,8 @@ import { eq } from 'drizzle-orm';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
+
+//crud
 export const GET: RequestHandler = async () => {
 	const data = await db.select().from(user);
 	return json({ data });

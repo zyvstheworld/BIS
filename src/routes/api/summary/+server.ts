@@ -21,7 +21,7 @@ const openai = new OpenAI({
 export const GET: RequestHandler = async () => {
     const data = await db.select().from(user);
     
-    // Calculate statistics
+    // average
     const totalResidents = data.length;
     const averageAge = Math.round(data.reduce((sum, r) => sum + r.age, 0) / totalResidents);
     const ageGroups = {
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async () => {
         senior: data.filter(r => r.age >= 60).length
     };
 
-
+    //openai
     try {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini", //gpt-4o-mini lang, wag na gagamit ng iba mahal eh -aron
